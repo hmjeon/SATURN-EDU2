@@ -1,0 +1,44 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+build/My Advisor Results - MERCURY-MITC6
+build/Debug
+build/Release
+build/x64
+build/output
+build/.vs
+
+# Executables
+*.exe
+*.out
+*.app
+*.u2d
+.vs
+*.11
+*.101
+fort.*
