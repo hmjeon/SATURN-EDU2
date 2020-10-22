@@ -1,7 +1,7 @@
 !
 ! =============================================================================
 !
-! DISP4
+! DISP4 - Planestress
 ! Computational Systems Design Laboratory (CSDL), https://csdlab.jbnu.ac.kr
 ! by Hyungmin Jun (hjun@jbnu.ac.kr)
 !
