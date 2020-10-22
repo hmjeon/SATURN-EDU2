@@ -90,7 +90,7 @@ end function Plane_Stiffness
 ! Equivalent nodal loads
 function Plane_Load(node, q) result(nodal_load)
     double precision, intent(in) :: node(nNPE, nDIM)    ! Node position
-    double precision, intent(in) :: q(nDIM)             ! Body forces in x- and y-directions
+    double precision, intent(in) :: q(nDIM)             ! Body forces
 
     double precision :: nodal_load(nDPN*nNPE)   ! Element load vector 
     double precision :: H(nNPE)                 ! Shape functions
