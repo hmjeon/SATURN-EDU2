@@ -2,8 +2,8 @@
 ! =============================================================================
 !
 ! Data_Struct
-! Computational Systems Design Laboratory(CSDL)
-! by Hyungmin Jun(hjun@jbnu.ac.kr)
+! Computational Systems Design Laboratory (CSDL), https://csdlab.jbnu.ac.kr
+! by Hyungmin Jun (hjun@jbnu.ac.kr)
 !
 ! =============================================================================
 !

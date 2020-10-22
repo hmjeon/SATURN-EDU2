@@ -1,9 +1,9 @@
 !
 ! =============================================================================
 !
-! SATURN Educational Version - LU decomposition with full global matrix
-! Computational Systems Design Laboratory(CSDL)
-! by Hyungmin Jun(hjun@jbnu.ac.kr)
+! SATURN Educational Ver. 2 - LU decomposition
+! Computational Systems Design Laboratory (CSDL), https://csdlab.jbnu.ac.kr
+! by Hyungmin Jun (hjun@jbnu.ac.kr)
 !
 ! =============================================================================
 !
@@ -21,7 +21,7 @@
 !
 ! -----------------------------------------------------------------------------
 !
-program SATURN_EDU
+program SATURN_EDU2
 
     use Data_Struct
     use DISP4
@@ -268,10 +268,10 @@ subroutine Assemble_Load(node, elem, prop, R)
     double precision, intent(out) :: R(:)
 
     double precision :: eNode(nNPE, nDIM)
-    double precision :: NodalLoad(nDPN*nNPE)    ! Equivalent nodal load
+    double precision :: NodalLoad(nDPN*nNPE)
     integer :: i, j, k
 
-    R(:) = 0
+    R(:) = 0.0d0
 
     ! Assemble load vector for nodal load
     do i = 1, size(node)
@@ -313,17 +313,17 @@ subroutine Displacement_Stress(node, elem, prop, R, U)
     double precision, intent(in) :: R(:)
     double precision, intent(in) :: U(:)
 
-    double precision :: eNode(nNPE,nDIM)                ! nodal position of element
-    double precision :: displace(nNPE*nDPN)             ! nodal displacement vector of element
-    double precision :: Stress(nNPE,3)                  ! Sxx, Syy, Sxy in Gauss points or nodal positions (4)
-    double precision :: scale_factor, max_pos, max_disp ! scaling factor
+    double precision :: eNode(nNPE,nDIM)                ! Nodal position of the element
+    double precision :: displace(nNPE*nDPN)             ! Nodal displacement of the element
+    double precision :: Stress(nNPE, 3)                 ! Sxx, Syy, Sxy according to # of Gauss points
+    double precision :: scale_factor, max_pos, max_disp ! Scaling factor
     integer :: i, j, k
 
     ! Strain energy
-    write(3,"(a17, E14.6)") "STRAIN ENERGY = ", 0.5d0 * dot_product(R, U)
-    write(4,*) size(elem)
+    write(3, "(a17, E14.6)") "STRAIN ENERGY = ", 0.5d0 * dot_product(R, U)
+    write(4, *) size(elem)
 
-    ! set scaling factor for the plotting
+    ! Set scaling factor for the plotting
     max_pos  = 0.0d0
     max_disp = 0.0d0
     do i=1, size(node)
@@ -341,39 +341,39 @@ subroutine Displacement_Stress(node, elem, prop, R, U)
     ! 1.2 * max_pos = (scale_factor * max_disp + max_pos)
     scale_factor = (1.2d0 * max_pos - max_pos) / max_disp
 
-    write(4,"(E14.6)"), scale_factor
+    write(4, "(E14.6)"), scale_factor
 
-    ! print nodal displacement
-    write(3,*)
-    write(3,*) "DISPLACEMENT "
-    write(3,*) "------------------------------"
-    write(3,*) "  Node      Dx         Dy     "
+    ! Print nodal displacement
+    write(3, *)
+    write(3, *) "DISPLACEMENT "
+    write(3, *) "------------------------------"
+    write(3, *) "  Node      Dx         Dy     "
    
-    do i=1, size(node)
-        write(3,"(1x,i4,2x,2(1P,E11.3))") i, U(node(i)%eq_n(1)), U(node(i)%eq_n(2))
+    do i = 1, size(node)
+        write(3, "(1x,i4,2x,2(1P,E11.3))") i, U(node(i)%eq_n(1)), U(node(i)%eq_n(2))
     end do
-    write(3,*)
+    write(3, *)
 
     do i = 1, size(elem)
 
-        ! nodal position of element
+        ! Nodal position of element
         do j = 1, nNPE
             do k = 1, nDIM
                 eNode(j, k) = node( elem(i)%cn(j) )%x(k)
             end do
         end do
       
-        ! displacement vector of element 
+        ! Displacement vector of element 
         do j = 1, nDPN
             do k = 1, nNPE
                 displace(nNPE*j+k-nNPE) = U(node(elem(i)%cn(k))%eq_n(j))
             end do
         end do
 
-        ! calculate stress of element
+        ! Calculate stress of element
         Stress = Plane_Stress(prop.young, prop.poisson, eNode, displace)
       
-        ! print stress
+        ! Print element stresses
         write(3, "(a21,i4)") " STRESS of ELEMENT : ", i
         write(3, *) "----------------------------------------------" 
         write(3, *) " Position       Sxx        Syy        Sxy     "
@@ -382,8 +382,8 @@ subroutine Displacement_Stress(node, elem, prop, R, U)
             write(3, "(1x,i4,5x, 3x,3(1P,E11.3))") j, Stress(j,:)
         end do
         write(3, *)
-        
-        ! print deformed shape and stress for post processing by using MATLAB 
+
+        ! Print deformed shape and stress for MATLAB post-processing
         write(4, "(1x,28(1P,E13.5))") eNode(1,:), displace(1), displace(5), Stress(1,:),&
                                       eNode(2,:), displace(2), displace(6), Stress(2,:),&
                                       eNode(3,:), displace(3), displace(7), Stress(3,:),&
@@ -417,20 +417,18 @@ subroutine Print_Information(node, elem, prop, dof, n_eq)
     integer, intent(in) :: n_eq
 
     write(0, "(a)")
-    write(0, "(a)"), " [SATURN - Educational Version]"
-    write(0, "(a)"), " : LU decomposition with full global matrix"
+    write(0, "(a)"), " [SATURN - EDU Ver. 2 (LU decomposition)"
     write(0, "(a)")
     write(0, "(a)"), " ====================================================================="
-    write(0, "(a)")
     write(0, "(a, es10.3$)"), " Young's modulus: ", prop%Young
-    write(0, "(a,   f6.4$)"), ", Poisson ratio: ", prop%Poisson
-    write(0, "(a,   f6.4 )"), ", thick: ", prop%thick
+    write(0, "(a,   f6.3$)"), ", Poisson ratio: ", prop%Poisson
+    write(0, "(a,   f6.3 )"), ", thick: ", prop%thick
     write(0, "(a, i5$)"), " # of elements: ", size(elem)
-    write(0, "(a,  i5)"), ", # of nodes: ", size(node)
+    write(0, "(a,  i6)"), ", # of nodes:  ", size(node)
     write(0, "(a, i6$)"), " # total DOFs: ", dof(1)
     write(0, "(a, i6$)"), ", # free DOFs: ", dof(2)
     write(0, "(a, i6 )"), ", # fixed DOFs: ", dof(3)
-    write(0, "(a, i7$)")," # of equations = ", n_eq
+    write(0, "(a, i6$)")," # equations: ", n_eq
     write(0, "(a)")
     write(0, "(a)"), " ====================================================================="
     write(0, "(a)")
@@ -438,4 +436,4 @@ end subroutine Print_Information
 
 ! --------------------------------------------------------------------------------
 
-end program SATURN_EDU
+end program SATURN_EDU2

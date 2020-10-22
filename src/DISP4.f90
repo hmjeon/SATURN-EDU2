@@ -2,8 +2,8 @@
 ! =============================================================================
 !
 ! DISP4
-! Computational Systems Design Laboratory(CSDL)
-! by Hyungmin Jun(hjun@jbnu.ac.kr)
+! Computational Systems Design Laboratory (CSDL), https://csdlab.jbnu.ac.kr
+! by Hyungmin Jun (hjun@jbnu.ac.kr)
 !
 !               s
 !               |
@@ -103,6 +103,7 @@ function Plane_Load(node, q) result(nodal_load)
     ! Numerical integration
     do i = 1, nGP
         do j = 1, nGP
+
             ! Gauss points
             call Gauss22_Point(i, j, r, s, weight)
 
@@ -112,7 +113,7 @@ function Plane_Load(node, q) result(nodal_load)
 
             ! Equivalent nodal load vector
             do k=1, nNPE
-                nodal_load(k)      = nodal_load(k) + weight * dabs(Det(Jacob)) * H(k) * q(1)
+                nodal_load(k)      = nodal_load(k)      + weight * dabs(Det(Jacob)) * H(k) * q(1)
                 nodal_load(k+nNPE) = nodal_load(k+nNPE) + weight * dabs(Det(Jacob)) * H(k) * q(2)
             end do
         end do
@@ -127,8 +128,8 @@ function Plane_Stress(young, poisson, node, disp) result(stress)
     double precision, intent(in) :: node(nNPE,nDIM)     ! nodal position of element
     double precision, intent(in) :: disp(nDPN*nNPE)     ! displacement vector
 
-    double precision :: stress(nNPE,3)      ! Stress (Sx, Sy, Sxy)
-    double precision :: C(3,3), B(3, nDPN*nNPE)
+    double precision :: stress(nNPE, 3)      ! Stress (Sx, Sy, Sxy)
+    double precision :: C(3, 3), B(3, nDPN*nNPE)
     double precision :: buf_det
     double precision :: r, s, weight
     integer :: i, j
@@ -222,14 +223,14 @@ subroutine dHxy_Matrix(r, s, node, det_j, dHxy)
     Jacob = Jacobian(r, s, node)
 
     ! Jacob => inverse of jacobian Matrix
-    det_j      = Jacob(1,1) * Jacob(2,2) - Jacob(1,2) * Jacob(2,1)
+    det_j      =  Jacob(1,1) * Jacob(2,2) - Jacob(1,2) * Jacob(2,1)
     Jacob(1,2) = -Jacob(1,2)
     Jacob(2,1) = -Jacob(2,1)
-    buf        = Jacob(1,1)
-    Jacob(1,1) = Jacob(2,2)
-    Jacob(2,2) = buf
-    Jacob      = Jacob / det_j
- 
+    buf        =  Jacob(1,1)
+    Jacob(1,1) =  Jacob(2,2)
+    Jacob(2,2) =  buf
+    Jacob      =  Jacob / det_j
+
     ! dHxy(1,:)=dH/dx, dHxy(2,:)=dH/dy
     dHxy = matmul(Jacob, dHrs)
 end subroutine dHxy_Matrix
